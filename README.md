@@ -1,5 +1,9 @@
 Forked from https://github.com/geocine/phaser3-rollup-typescript
 
+Not many changes yet, updated dependencies and intergrated butler for publishing on itch.io.
+
+Public build of this project is available at https://twopm.itch.io/set-phasers-to-fun
+
 Original README below:
 
 ---
