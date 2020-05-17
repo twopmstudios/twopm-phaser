@@ -1,8 +1,14 @@
+import { State, Action } from '../state'
+import { apply } from '../apply'
+import { Vec } from '../types'
 
 export default class Demo extends Phaser.Scene {
-  logo: Phaser.GameObjects.Image
   logoSm: Phaser.GameObjects.Image
-  timer: number = 0
+  actions: Action[] = []
+  state: State = {
+    timer: 0,
+    orbitPos: Vec(0, 0),
+  }
 
   constructor() {
     super('GameScene')
@@ -13,12 +19,14 @@ export default class Demo extends Phaser.Scene {
   }
 
   create() {
-    this.logo = this.add.image(400, 200, 'twopm')
-    this.logoSm = this.add.image(400, 200, 'twopm')
+    let logo = this.add.image(0, 0, 'twopm')
+    this.logoSm = this.add.image(0, 0, 'twopm')
     this.logoSm.scale = 0.2
 
+    let container = this.add.container(400, 200, [logo, this.logoSm])
+
     this.tweens.add({
-      targets: this.logo,
+      targets: container,
       y: 240,
       duration: 3000,
       ease: 'Sine.inOut',
@@ -27,13 +35,34 @@ export default class Demo extends Phaser.Scene {
     })
   }
 
-  update() {
-    this.timer += 0.005
-    let radius = 220
+  logic(state: State): Action[] {
+    let radius = 180
+    // actions is mutated and cleared to reduce memory alloc
+    this.actions.length = 0
 
-    this.logoSm.setPosition(
-      this.logo.x + radius * Math.cos(this.timer),
-      this.logo.y + radius * Math.sin(this.timer)
-    )
+    // future: event loop
+    // events are dispatched and listeners are updated (rxjs backed)
+    // subscribers can emit events in response, handled synchronously
+    // subscribers have access to an addAction function to express indended side effects
+    // managers and supervisors can also recieve a poll here, letting them trigger actions
+    // aggregated actions are passed to apply etc.
+
+    this.actions.push({
+      type: 'timer_tick',
+    })
+
+    this.actions.push({
+      type: 'update_position',
+      position: Vec(radius * Math.cos(state.timer), radius * Math.sin(state.timer)),
+    })
+
+    return this.actions
+  }
+
+  update() {
+    let patch = this.logic(this.state)
+    this.state = apply(this.state)(patch)
+
+    this.logoSm.setPosition(this.state.orbitPos.x, this.state.orbitPos.y)
   }
 }
