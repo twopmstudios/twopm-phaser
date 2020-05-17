@@ -1,7 +1,7 @@
 {
-  "name": "phaser3-rollup-typescript",
-  "version": "1.0.2",
-  "description": "Phaser 3 TypeScript Starter",
+  "name": "twopm-phaser-template",
+  "version": "1.0.0",
+  "description": "TwoPM Phaser Typescript template",
   "main": "src/game.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nollup -c --hot --content-base public",
@@ -10,14 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/geocine/phaser3-rollup-typescript.git"
+    "url": "https://github.com/bfollington/twopm-phaser.git"
   },
-  "author": "Aivan Monceller",
+  "author": "Ben Follington",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/geocine/phaser3-rollup-typescript/issues"
-  },
-  "homepage": "https://github.com/geocine/phaser3-rollup-typescript#readme",
   "devDependencies": {
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-node-resolve": "^7.1.1",
