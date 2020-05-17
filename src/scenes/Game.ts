@@ -1,4 +1,3 @@
-import Phaser from 'phaser'
 
 export default class Demo extends Phaser.Scene {
   logo: Phaser.GameObjects.Image
