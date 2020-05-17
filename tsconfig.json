@@ -2,11 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "noImplicitAny": false,
-    "allowJs": true,
-    "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
+    "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "lib": ["esnext", "dom"]
   },
