@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nollup -c --hot --content-base public",
     "build": "rimraf dist && cross-env NODE_ENV=production rollup -c",
-    "start": "serve dist"
+    "start": "serve dist",
+    "push": "yarn build && butler push dist twopm/set-phasers-to-fun:web"
   },
   "repository": {
     "type": "git",
