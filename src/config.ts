@@ -7,7 +7,7 @@ export default {
   scale: {
     width: 800,
     height: 480,
-    mode: Phaser.Scale.MAX_ZOOM,
+    mode: Phaser.Scale.ScaleModes.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 }
