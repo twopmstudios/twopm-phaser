@@ -26,7 +26,7 @@ export default class Demo extends Phaser.Scene {
     let twopm = this.add.image(0, 0, 'twopm')
     let twopmSmall = this.add.image(0, 0, 'twopm')
     twopmSmall.scale = 0.2
-    let container = this.add.container(400, 200, [twopm, twopmSmall])
+    let container = this.add.container(281, 609 - 40, [twopm, twopmSmall])
 
     addEntity(this.entities, this.components, twopm, [name('twopm')])
     addEntity(this.entities, this.components, twopmSmall, [name('twopm-small')])
@@ -34,7 +34,7 @@ export default class Demo extends Phaser.Scene {
 
     this.tweens.add({
       targets: container,
-      y: 240,
+      y: 609 + 40,
       duration: 3000,
       ease: 'Sine.inOut',
       yoyo: true,
