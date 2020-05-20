@@ -88,6 +88,13 @@ if (isProd) {
             __dirname,
             'node_modules/phaser/dist/phaser.js'
           )
+        },
+        {
+          find: 'rxjs',
+          replacement: path.resolve(
+            __dirname,
+            'node_modules/rxjs/_esm5'
+          )
         }
       ]
     }),

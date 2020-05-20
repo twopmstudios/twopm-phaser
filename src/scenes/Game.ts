@@ -4,18 +4,71 @@ import { Vec } from '../types'
 import { EntityMap, ComponentMap, addEntity } from '../entity'
 import { name } from '../components/index'
 import { findEntityByName } from '../components/name'
+import { EventStream, makeEventStream } from '../events'
+import {
+  GameEvent,
+  sceneInitCompleted,
+  userMouseClicked,
+  GameEventType,
+  filterEvent,
+  colorToggled,
+} from '../events/game'
+import { Subscription, pipe } from 'rxjs'
+import { filter } from 'rxjs/operators'
+import { GameObjects } from 'phaser'
+
+const listen = (fn: () => Subscription, list: Subscription[]) => {
+  list.push(fn())
+}
 
 export default class Demo extends Phaser.Scene {
   actions: Action[] = []
   state: State = {
     timer: 0,
     orbitPos: Vec(0, 0),
+    color: 'blue',
   }
   entities: EntityMap = {}
   components: ComponentMap = {}
+  msgs: EventStream<GameEvent> = makeEventStream<GameEvent>('events')
+  subscriptions: Subscription[] = []
 
   constructor() {
     super('GameScene')
+  }
+
+  init() {
+    let s = this.msgs.stream
+
+    listen(
+      () =>
+        s.subscribe((x) => {
+          console.log('LOG', x)
+        }),
+      this.subscriptions
+    )
+
+    listen(
+      () =>
+        s.pipe(filterEvent<GameEvent>('USER_MOUSE_CLICKED')).subscribe((x) => {
+          this.msgs.emit(colorToggled())
+        }),
+      this.subscriptions
+    )
+
+    listen(
+      () =>
+        s.pipe(filterEvent<GameEvent>('COLOR_TOGGLED')).subscribe((x) => {
+          this.actions.push({
+            type: 'toggle_color',
+          })
+        }),
+      this.subscriptions
+    )
+
+    this.events.on('destroy', () => this.subscriptions.forEach((s) => s.unsubscribe()))
+
+    this.input.on('pointerup', () => this.msgs.emit(userMouseClicked()))
   }
 
   preload() {
@@ -40,12 +93,12 @@ export default class Demo extends Phaser.Scene {
       yoyo: true,
       repeat: -1,
     })
+
+    this.msgs.emit(sceneInitCompleted())
   }
 
   logic(state: State): Action[] {
     let radius = 180
-    // actions is mutated and cleared to reduce memory alloc
-    this.actions.length = 0
 
     // future: event loop
     // events are dispatched and listeners are updated (rxjs backed)
@@ -70,9 +123,14 @@ export default class Demo extends Phaser.Scene {
     let patch = this.logic(this.state)
     this.state = apply(this.state)(patch)
 
-    findEntityByName(this.entities, this.components, 'twopm-small').forEach((e) =>
+    // actions is mutated and cleared to reduce memory alloc
+    this.actions.length = 0
+    // console.log(this.state)
+
+    findEntityByName(this.entities, this.components, 'twopm-small').forEach((e) => {
+      ;(e as GameObjects.Image).tint = this.state.color === 'blue' ? 0x0000ff : 0xff0000
       // Need more brain to understand Phaser types
-      (e as any).setPosition(this.state.orbitPos.x, this.state.orbitPos.y)
-    )
+      ;(e as any).setPosition(this.state.orbitPos.x, this.state.orbitPos.y)
+    })
   }
 }

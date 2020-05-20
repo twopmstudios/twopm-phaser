@@ -32,5 +32,6 @@
     "typescript": "^3.9.2"
   },
   "dependencies": {
+    "rxjs": "^6.5.5"
   }
 }
